@@ -144,7 +144,16 @@ void arm_std_f32(
                                   ((float32_t) blockSize - 1.0f));
 
   /* Compute standard deviation and then store the result to the destination */
-  arm_sqrt_f32((meanOfSquares - squareOfMean), pResult);
+  /* Guard against negative inputs to arm_sqrt_f32() */
+  if (meanOfSquares > squareOfMean)
+  {
+    arm_sqrt_f32((meanOfSquares - squareOfMean), pResult);
+  }
+  else
+  {
+    arm_sqrt_f32((squareOfMean - meanOfSquares), pResult);
+  }
+  
 
 #else
   /* Run the below code for Cortex-M0 */
